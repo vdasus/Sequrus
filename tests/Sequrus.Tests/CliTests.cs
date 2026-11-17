@@ -70,7 +70,11 @@ public sealed class CliTests
             RedirectStandardOutput = true,
             RedirectStandardError = true,
         };
-        psi.ArgumentList.Add(Path.Combine(AppContext.BaseDirectory, "Sequrus.Cli.dll"));
+        // The copy next to the tests sits with net10.0 dependencies (Optionus), so it must not run on an older installed runtime.
+        foreach (var arg in new[] { "exec", "--roll-forward", "LatestMajor", Path.Combine(AppContext.BaseDirectory, "Sequrus.Cli.dll") })
+        {
+            psi.ArgumentList.Add(arg);
+        }
         psi.ArgumentList.Add(command);
         if (argument is not null)
         {
