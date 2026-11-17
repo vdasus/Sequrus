@@ -6,3 +6,4 @@ obj/
 .idea/
 *.user
 TestResults/
+*.ncrunchsolution
