@@ -1,4 +1,12 @@
 <Project>
+  <!-- WSL builds get their own bin/wsl and obj/wsl, so they never share restore and build state with Visual Studio on Windows. -->
+  <PropertyGroup Condition="'$(WSL_DISTRO_NAME)' != ''">
+    <BaseIntermediateOutputPath>obj/wsl/</BaseIntermediateOutputPath>
+    <BaseOutputPath>bin/wsl/</BaseOutputPath>
+    <!-- The Windows obj/ and bin/ hold generated .cs files that must not be compiled here. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;bin/**</DefaultItemExcludes>
+  </PropertyGroup>
+
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
@@ -9,7 +17,7 @@
     <!-- Maps local source paths to /_/ in DLL and PDB files, so packages carry no machine paths. -->
     <ContinuousIntegrationBuild Condition="'$(Configuration)' == 'Release'">true</ContinuousIntegrationBuild>
 
-    <!-- SemVer; the pre-release suffix stays until the first reviewed release. -->
+    <!-- SemVer. -->
     <Version>0.2.0</Version>
     <Authors>vdasus</Authors>
     <Copyright>vdasus</Copyright>
