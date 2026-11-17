@@ -1,0 +1,38 @@
+name: Release
+
+# Push a tag like v0.1.0-alpha.1 to publish that version of all packages to nuget.org.
+# A tag with a pre-release suffix creates a GitHub pre-release.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write   # create the GitHub release
+  id-token: write   # NuGet trusted publishing (OIDC)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - name: Test
+        run: dotnet test -c Release
+      - name: Pack
+        run: dotnet pack -c Release -o out -p:Version=${GITHUB_REF_NAME#v}
+      - name: NuGet login
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: vdasus
+      - name: Push to nuget.org
+        run: dotnet nuget push "out/*.nupkg" --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      - name: GitHub release
+        run: |
+          prerelease=""
+          [[ "$GITHUB_REF_NAME" == *-* ]] && prerelease="--prerelease"
+          gh release create "$GITHUB_REF_NAME" out/*.nupkg out/*.snupkg --title "$GITHUB_REF_NAME" --generate-notes $prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}

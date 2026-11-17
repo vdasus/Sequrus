@@ -19,6 +19,8 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>encryption;decryption;aes;aes-gcm;aes-256;crypto;security;secrets;secret-management;connection-string;configuration;appsettings;key-rotation;pbkdf2;dotnet-tool;cli</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>

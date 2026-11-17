@@ -4,8 +4,8 @@ Encrypts and decrypts strings and connection-string secrets for .NET 8 and later
 Values are encrypted with AES-256-GCM; the key comes from the `SEQURUS_KEY` environment variable.
 
 > **Status: pre-release (`0.1.0-alpha.1`).** The project is not yet release-ready: the API and the
-> value format may change before `1.0.0`, and the packages are not published to nuget.org.
-> Do not use it to protect production secrets until a release is tagged.
+> value format may change before `1.0.0`; the packages on nuget.org are pre-release versions.
+> Do not use it to protect production secrets until a stable release is published.
 
 | Package | Purpose |
 |---|---|
