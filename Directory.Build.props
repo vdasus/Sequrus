@@ -18,7 +18,7 @@
     <ContinuousIntegrationBuild Condition="'$(Configuration)' == 'Release'">true</ContinuousIntegrationBuild>
 
     <!-- SemVer. -->
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
     <Authors>vdasus</Authors>
     <Copyright>vdasus</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

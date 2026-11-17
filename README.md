@@ -3,7 +3,7 @@
 Encrypts and decrypts strings and connection-string secrets for .NET 8 and later.
 Values are encrypted with AES-256-GCM; the key comes from the `SEQURUS_KEY` environment variable.
 
-> **Status: early (`0.2.0`).** The API and the value format may change before `1.0.0`.
+> **Status: early (`0.2.1`).** The API and the value format may change before `1.0.0`.
 > Do not use it to protect production secrets until `1.0.0` is published.
 
 | Package | Purpose |
