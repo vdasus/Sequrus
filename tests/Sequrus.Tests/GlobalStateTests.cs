@@ -10,11 +10,11 @@ public sealed class GlobalState;
 [Collection(nameof(GlobalState))]
 public sealed class GlobalStateTests : IDisposable
 {
-    private readonly string? _savedEnv = Environment.GetEnvironmentVariable(SequrusCipher.EnvironmentVariable);
+    private readonly string? _savedEnv = Environment.GetEnvironmentVariable(SequrusCipher.ENVIRONMENT_VARIABLE);
 
     public void Dispose()
     {
-        Environment.SetEnvironmentVariable(SequrusCipher.EnvironmentVariable, _savedEnv);
+        Environment.SetEnvironmentVariable(SequrusCipher.ENVIRONMENT_VARIABLE, _savedEnv);
         Sq.Configure(null);
     }
 
@@ -24,7 +24,7 @@ public sealed class GlobalStateTests : IDisposable
     public void Extensions_UseKeyFromEnvironment()
     {
         var key = SequrusKey.Generate();
-        Environment.SetEnvironmentVariable(SequrusCipher.EnvironmentVariable, key);
+        Environment.SetEnvironmentVariable(SequrusCipher.ENVIRONMENT_VARIABLE, key);
         Sq.Configure(null);
 
         var encrypted = "secret".SqEncrypt();
@@ -39,7 +39,7 @@ public sealed class GlobalStateTests : IDisposable
     [Trait("Category", "Unit")]
     public void MissingVariable_ThrowsEachTime_ThenWorksOnceSet()
     {
-        Environment.SetEnvironmentVariable(SequrusCipher.EnvironmentVariable, null);
+        Environment.SetEnvironmentVariable(SequrusCipher.ENVIRONMENT_VARIABLE, null);
         Sq.Configure(null);
 
         var act = () => "x".SqEncrypt();
@@ -47,7 +47,7 @@ public sealed class GlobalStateTests : IDisposable
         act.Should().Throw<InvalidOperationException>();
         act.Should().Throw<InvalidOperationException>();
 
-        Environment.SetEnvironmentVariable(SequrusCipher.EnvironmentVariable, SequrusKey.Generate());
+        Environment.SetEnvironmentVariable(SequrusCipher.ENVIRONMENT_VARIABLE, SequrusKey.Generate());
         "x".SqEncrypt().SqDecrypt().Should().Be("x");
     }
 
@@ -55,7 +55,7 @@ public sealed class GlobalStateTests : IDisposable
     [Trait("Category", "Unit")]
     public void Configure_OverridesEnvironment()
     {
-        Environment.SetEnvironmentVariable(SequrusCipher.EnvironmentVariable, SequrusKey.Generate());
+        Environment.SetEnvironmentVariable(SequrusCipher.ENVIRONMENT_VARIABLE, SequrusKey.Generate());
         var configured = new SequrusCipher(SequrusKey.Generate());
         Sq.Configure(configured);
 

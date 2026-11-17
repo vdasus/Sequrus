@@ -16,16 +16,16 @@ namespace Sequrus;
 public sealed partial class SequrusCipher : ISequrus
 {
     /// <summary>Default environment variable with the key list.</summary>
-    public const string EnvironmentVariable = "SEQURUS_KEY";
+    public const string ENVIRONMENT_VARIABLE = "SEQURUS_KEY";
 
     /// <summary>Prefix of every encrypted value.</summary>
-    public const string Prefix = "sq1:";
+    public const string PREFIX = "sq1:";
 
-    private const int KeyIdSize = 4;
-    private const int NonceSize = 12;
-    private const int TagSize = 16;
-    private const int HeaderSize = KeyIdSize + NonceSize + TagSize;
-    private const char KeySeparator = ',';
+    private const int KEY_ID_SIZE = 4;
+    private const int NONCE_SIZE = 12;
+    private const int TAG_SIZE = 16;
+    private const int HEADER_SIZE = KEY_ID_SIZE + NONCE_SIZE + TAG_SIZE;
+    private const char KEY_SEPARATOR = ',';
 
     private static readonly UTF8Encoding StrictUtf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
 
@@ -58,12 +58,12 @@ public sealed partial class SequrusCipher : ISequrus
     public static SequrusCipher Parse(string keyList)
     {
         ArgumentNullException.ThrowIfNull(keyList);
-        return new SequrusCipher(keyList.Split(KeySeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+        return new SequrusCipher(keyList.Split(KEY_SEPARATOR, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
     }
 
     /// <summary>Reads the key list from an environment variable (default <c>SEQURUS_KEY</c>).</summary>
     /// <exception cref="InvalidOperationException">The variable is not set.</exception>
-    public static SequrusCipher FromEnvironment(string variable = EnvironmentVariable)
+    public static SequrusCipher FromEnvironment(string variable = ENVIRONMENT_VARIABLE)
     {
         var value = Environment.GetEnvironmentVariable(variable);
         if (string.IsNullOrWhiteSpace(value))
@@ -97,19 +97,19 @@ public sealed partial class SequrusCipher : ISequrus
     public string Encrypt(ReadOnlySpan<byte> plaintext)
     {
         var key = _keys[0];
-        var blob = new byte[HeaderSize + plaintext.Length];
+        var blob = new byte[HEADER_SIZE + plaintext.Length];
         var span = blob.AsSpan();
         key.Id.CopyTo(span);
-        var nonce = span.Slice(KeyIdSize, NonceSize);
-        var tag = span.Slice(KeyIdSize + NonceSize, TagSize);
+        var nonce = span.Slice(KEY_ID_SIZE, NONCE_SIZE);
+        var tag = span.Slice(KEY_ID_SIZE + NONCE_SIZE, TAG_SIZE);
         RandomNumberGenerator.Fill(nonce);
 
-        using (var aes = new AesGcm(key.Material, TagSize))
+        using (var aes = new AesGcm(key.Material, TAG_SIZE))
         {
-            aes.Encrypt(nonce, plaintext, span[HeaderSize..], tag, AssociatedData(key.Id));
+            aes.Encrypt(nonce, plaintext, span[HEADER_SIZE..], tag, AssociatedData(key.Id));
         }
 
-        return Prefix + Base64Url.Encode(blob);
+        return PREFIX + Base64Url.Encode(blob);
     }
 
     /// <inheritdoc/>
@@ -183,24 +183,24 @@ public sealed partial class SequrusCipher : ISequrus
 
     /// <summary>Applies <paramref name="replace"/> to every <c>sq1:</c> token in the text.</summary>
     internal static string ReplaceTokens(string text, Func<string, string> replace) =>
-        text.Contains(Prefix, StringComparison.Ordinal)
+        text.Contains(PREFIX, StringComparison.Ordinal)
             ? EmbeddedTokenRegex().Replace(text, m => replace(m.Value))
             : text;
 
     private bool TryDecryptCore(string? ciphertext, [NotNullWhen(true)] out byte[]? plaintext)
     {
         plaintext = null;
-        if (ciphertext is null || !ciphertext.StartsWith(Prefix, StringComparison.Ordinal)
-            || !Base64Url.TryDecode(ciphertext.AsSpan(Prefix.Length), out var blob)
-            || blob.Length < HeaderSize)
+        if (ciphertext is null || !ciphertext.StartsWith(PREFIX, StringComparison.Ordinal)
+            || !Base64Url.TryDecode(ciphertext.AsSpan(PREFIX.Length), out var blob)
+            || blob.Length < HEADER_SIZE)
         {
             return false;
         }
 
-        var id = blob.AsSpan(0, KeyIdSize);
-        var nonce = blob.AsSpan(KeyIdSize, NonceSize);
-        var tag = blob.AsSpan(KeyIdSize + NonceSize, TagSize);
-        var data = blob.AsSpan(HeaderSize);
+        var id = blob.AsSpan(0, KEY_ID_SIZE);
+        var nonce = blob.AsSpan(KEY_ID_SIZE, NONCE_SIZE);
+        var tag = blob.AsSpan(KEY_ID_SIZE + NONCE_SIZE, TAG_SIZE);
+        var data = blob.AsSpan(HEADER_SIZE);
 
         foreach (var key in _keys)
         {
@@ -212,7 +212,7 @@ public sealed partial class SequrusCipher : ISequrus
             var result = new byte[data.Length];
             try
             {
-                using var aes = new AesGcm(key.Material, TagSize);
+                using var aes = new AesGcm(key.Material, TAG_SIZE);
                 aes.Decrypt(nonce, data, tag, result, AssociatedData(key.Id));
                 plaintext = result;
                 return true;
@@ -251,20 +251,20 @@ public sealed partial class SequrusCipher : ISequrus
 
         public static KeyEntry Parse(string base64Key, int index)
         {
-            // One extra byte detects keys longer than KeySize.
-            Span<byte> buffer = stackalloc byte[SequrusKey.KeySize + 1];
+            // One extra byte detects keys longer than KEY_SIZE.
+            Span<byte> buffer = stackalloc byte[SequrusKey.KEY_SIZE + 1];
             try
             {
                 if (string.IsNullOrWhiteSpace(base64Key)
                     || !Convert.TryFromBase64String(base64Key.Trim(), buffer, out var written)
-                    || written != SequrusKey.KeySize)
+                    || written != SequrusKey.KEY_SIZE)
                 {
                     // The message never contains the key itself.
-                    throw new ArgumentException($"Key #{index} must be base64 of {SequrusKey.KeySize} bytes.", nameof(base64Key));
+                    throw new ArgumentException($"Key #{index} must be base64 of {SequrusKey.KEY_SIZE} bytes.", nameof(base64Key));
                 }
 
-                var material = buffer[..SequrusKey.KeySize].ToArray();
-                return new KeyEntry(SHA256.HashData(material).AsSpan(0, KeyIdSize).ToArray(), material);
+                var material = buffer[..SequrusKey.KEY_SIZE].ToArray();
+                return new KeyEntry(SHA256.HashData(material).AsSpan(0, KEY_ID_SIZE).ToArray(), material);
             }
             finally
             {

@@ -11,7 +11,7 @@ public class SequrusKeyTests
     {
         var a = SequrusKey.Generate();
 
-        Convert.FromBase64String(a).Should().HaveCount(SequrusKey.KeySize);
+        Convert.FromBase64String(a).Should().HaveCount(SequrusKey.KEY_SIZE);
         a.Should().NotBe(SequrusKey.Generate());
     }
 

@@ -23,7 +23,7 @@ public class SequrusCipherTests
 
         var encrypted = sut.Encrypt(plaintext);
 
-        encrypted.Should().StartWith(SequrusCipher.Prefix);
+        encrypted.Should().StartWith(SequrusCipher.PREFIX);
         if (plaintext.Length > 0)
         {
             encrypted.Should().NotContain(plaintext);

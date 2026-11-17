@@ -3,8 +3,8 @@ using System.Text;
 using Optionus;
 using Sequrus;
 
-const string KeyNote = "SEQURUS_KEY holds one key or a comma-separated list \"newKey,oldKey\"; the first key encrypts.";
-const string SecretNote = "Secrets are never taken from arguments (they would stay in shell history and process lists): "
+const string KEY_NOTE = "SEQURUS_KEY holds one key or a comma-separated list \"newKey,oldKey\"; the first key encrypts.";
+const string SECRET_NOTE = "Secrets are never taken from arguments (they would stay in shell history and process lists): "
     + "they are read from a hidden prompt, or from stdin when redirected.";
 
 var usePassword = false;
@@ -14,8 +14,8 @@ var suite = new CommandSet("sequrus")
 {
     "usage: sequrus COMMAND [OPTIONS]",
     "",
-    KeyNote,
-    SecretNote,
+    KEY_NOTE,
+    SECRET_NOTE,
     "",
     new Command("keygen", "Print a new random key, or derive one from a password (PBKDF2-SHA256)")
     {
@@ -48,7 +48,7 @@ var suite = new CommandSet("sequrus")
     },
     new Command("encrypt", "Encrypt a secret with the first key of SEQURUS_KEY")
     {
-        Options = new OptionSet { "usage: sequrus encrypt", "", SecretNote },
+        Options = new OptionSet { "usage: sequrus encrypt", "", SECRET_NOTE },
         Run = rest =>
         {
             NoArguments(rest);
@@ -66,7 +66,7 @@ var suite = new CommandSet("sequrus")
     },
     new Command("reencrypt", "Re-encrypt every sq1: token from stdin with the first key, write the text to stdout")
     {
-        Options = new OptionSet { "usage: sequrus reencrypt < input > output", "", KeyNote },
+        Options = new OptionSet { "usage: sequrus reencrypt < input > output", "", KEY_NOTE },
         Run = rest =>
         {
             NoArguments(rest);
@@ -98,7 +98,7 @@ static void NoArguments(IEnumerable<string> rest)
 {
     if (rest.Any())
     {
-        throw new OptionException("Unexpected argument. " + SecretNote, "argument");
+        throw new OptionException("Unexpected argument. " + SECRET_NOTE, "argument");
     }
 }
 
