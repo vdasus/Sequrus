@@ -10,7 +10,7 @@
     <ContinuousIntegrationBuild Condition="'$(Configuration)' == 'Release'">true</ContinuousIntegrationBuild>
 
     <!-- SemVer; the pre-release suffix stays until the first reviewed release. -->
-    <Version>0.1.0-alpha.1</Version>
+    <Version>0.2.0</Version>
     <Authors>vdasus</Authors>
     <Copyright>vdasus</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
