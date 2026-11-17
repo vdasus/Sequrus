@@ -106,8 +106,11 @@ static string ReadSecret(string prompt)
 {
     if (Console.IsInputRedirected)
     {
-        // Drop only the trailing line break added by echo/heredoc.
-        return Console.In.ReadToEnd().TrimEnd('\r', '\n');
+        // Drop only the one trailing line break added by echo/heredoc; a secret may end with its own.
+        var text = Console.In.ReadToEnd();
+        return text.EndsWith("\r\n", StringComparison.Ordinal) ? text[..^2]
+            : text.EndsWith('\n') ? text[..^1]
+            : text;
     }
 
     Console.Error.Write(prompt);

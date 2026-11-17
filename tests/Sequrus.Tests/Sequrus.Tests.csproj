@@ -17,6 +17,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Sequrus\Sequrus.csproj" />
     <ProjectReference Include="..\..\src\Sequrus.Configuration\Sequrus.Configuration.csproj" />
+    <!-- CliTests run the built sequrus tool as a process. -->
+    <ProjectReference Include="..\..\src\Sequrus.Cli\Sequrus.Cli.csproj" />
   </ItemGroup>
 
 </Project>
