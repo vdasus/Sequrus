@@ -1,0 +1,27 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <Deterministic>true</Deterministic>
+    <!-- Maps local source paths to /_/ in DLL and PDB files, so packages carry no machine paths. -->
+    <ContinuousIntegrationBuild Condition="'$(Configuration)' == 'Release'">true</ContinuousIntegrationBuild>
+
+    <!-- SemVer; the pre-release suffix stays until the first reviewed release. -->
+    <Version>0.1.0-alpha.1</Version>
+    <Authors>vdasus</Authors>
+    <Copyright>vdasus</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/vdasus/Sequrus</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/vdasus/Sequrus</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>encryption;decryption;aes;aes-gcm;aes-256;crypto;security;secrets;secret-management;connection-string;configuration;appsettings;key-rotation;pbkdf2;dotnet-tool;cli</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" Visible="false" />
+  </ItemGroup>
+</Project>

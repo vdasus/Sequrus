@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsAotCompatible>true</IsAotCompatible>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>Sequrus</PackageId>
+    <Description>Encrypt and decrypt strings and connection-string secrets with AES-256-GCM. The key comes from the SEQURUS_KEY environment variable.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Sequrus.Cli" />
+    <InternalsVisibleTo Include="Sequrus.Tests" />
+  </ItemGroup>
+
+</Project>

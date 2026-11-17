@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsAotCompatible>true</IsAotCompatible>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>Sequrus.Configuration</PackageId>
+    <Description>Microsoft.Extensions.Configuration integration for Sequrus: decrypts sq1: values in any configuration source.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Lowest version for net8.0: a library must not force consumers onto newer Microsoft.Extensions packages. -->
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Sequrus\Sequrus.csproj" />
+  </ItemGroup>
+
+</Project>

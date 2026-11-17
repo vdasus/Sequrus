@@ -1,1 +1,8 @@
 /Temp/
+bin/
+obj/
+*.nupkg
+.vs/
+.idea/
+*.user
+TestResults/

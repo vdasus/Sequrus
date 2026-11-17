@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Sequrus.Cli/Sequrus.Cli.csproj" />
+    <Project Path="src/Sequrus.Configuration/Sequrus.Configuration.csproj" />
+    <Project Path="src/Sequrus/Sequrus.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Sequrus.Tests/Sequrus.Tests.csproj" />
+  </Folder>
+</Solution>
