@@ -6,25 +6,41 @@ on:
   push:
     tags: ['v*']
 
-permissions:
-  contents: write   # create the GitHub release
-  id-token: write   # NuGet trusted publishing (OIDC)
+permissions: {}
 
 jobs:
-  publish:
+  # Tests run third-party package code, so they get no token and no publish rights.
+  test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-dotnet@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
         with:
           dotnet-version: 10.0.x
-      - name: Test
-        run: dotnet test -c Release
+      - run: dotnet test -c Release
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # create the GitHub release
+      id-token: write   # NuGet trusted publishing (OIDC)
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
+        with:
+          dotnet-version: 10.0.x
       - name: Pack
         run: dotnet pack -c Release -o out -p:Version=${GITHUB_REF_NAME#v}
       - name: NuGet login
         id: login
-        uses: NuGet/login@v1
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1
         with:
           user: vdasus
       - name: Push to nuget.org
