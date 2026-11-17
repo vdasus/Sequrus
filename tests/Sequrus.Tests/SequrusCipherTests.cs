@@ -69,8 +69,9 @@ public class SequrusCipherTests
     {
         var sut = new SequrusCipher(KeyA);
         var encrypted = sut.Encrypt("secret");
-        var last = encrypted[^1];
-        var tampered = encrypted[..^1] + (last == 'A' ? 'B' : 'A');
+        // A middle character: every bit of it is data (the last base64 character may carry unused bits).
+        var i = encrypted.Length / 2;
+        var tampered = encrypted[..i] + (encrypted[i] == 'A' ? 'B' : 'A') + encrypted[(i + 1)..];
 
         sut.Invoking(s => s.Decrypt(tampered)).Should().Throw<CryptographicException>();
         sut.TryDecrypt(tampered, out var result).Should().BeFalse();
